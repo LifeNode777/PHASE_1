@@ -15,6 +15,8 @@
 ---
 </div>
 
+```✴️who proposes the trajectory cannot be thou that certifies it🔆```
+
 # LifeNode Phase 1
 ## Modular Validation Roadmap (Pre-TRL 3 → TRL 4)
 
