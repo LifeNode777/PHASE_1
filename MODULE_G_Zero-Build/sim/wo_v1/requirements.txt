@@ -1,0 +1,14 @@
+# MODULE G Zero-Build — WORK_ORDER_v1 pinned environment
+# Python >= 3.10 required
+# Seed: 1618
+
+numpy==1.26.4
+scipy==1.14.1
+wfdb==4.1.2
+pandas==2.2.2
+matplotlib==3.9.2
+scikit-learn==1.5.1
+tqdm==4.66.5
+
+# Optional TIER-3 (not required for E1'–E4')
+# giotto-tda==0.6.0
