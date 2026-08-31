@@ -50,4 +50,4 @@ LTSTDB_RECORDS = ["201", "202", "203", "204", "205"]  # TIER-2 optional
 # Paths (relative to sim/wo_v1/)
 DATA_DIR = "data"
 OUTPUT_DIR = "outputs"
-REFERENCE_DIR = "reference"nie
+REFERENCE_DIR = "reference"
