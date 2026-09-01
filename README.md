@@ -155,7 +155,7 @@ stabilizing VLF fields (Earth-Sync). *TRL 3 → 5.*
 ### [MODULE G — Zero-Build Protocol (Mathematical Validation)](./MODULE_G_Zero-Build/)
 Validation of the LifeNode hypothesis **without hardware**, on open datasets
 (PhysioNet, Eden Node 0): Takens embedding, topological invariants (D₂, λ₁,
-persistent homology), phase-drift detection θ(t). *TRL 1 → 3.* ← **Start here.**
+persistent homology), phase-drift detection θ(t). *TRL 3 → 4.* ← (validation pipeline published on 1 September 2026) **Start here.**
 
 ---
 
