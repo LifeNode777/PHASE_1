@@ -9,6 +9,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.signal import savgol_filter
 from scipy.stats import spearmanr
+from scipy.spatial import KDTree
 from config import (
     MI_BINS, MAX_LAG_S, FNN_THRESHOLD, M_MIN, M_MAX,
     WINDOW_S, STRIDE_S, SG_WINDOW, SG_POLY, TARGET_FS,
@@ -44,7 +45,6 @@ def mutual_information_lag(x: np.ndarray, fs: float) -> tuple[int, float]:
     """
     max_lag = int(MAX_LAG_S * fs)
     n = len(x)
-    # Subsample for speed if signal is long
     step = max(1, n // 20000)
     xs = x[::step]
     max_lag_s = max_lag // step
@@ -54,7 +54,6 @@ def mutual_information_lag(x: np.ndarray, fs: float) -> tuple[int, float]:
     for lag in range(1, max_lag_s + 1):
         mis.append(_histogram_mi(xs[:-lag] if lag > 0 else xs, xs[lag:]))
     mis = np.array(mis)
-    # First local minimum
     tau = 1
     for i in range(1, len(mis) - 1):
         if mis[i] < mis[i - 1] and mis[i] <= mis[i + 1]:
@@ -64,7 +63,7 @@ def mutual_information_lag(x: np.ndarray, fs: float) -> tuple[int, float]:
     tau_s = tau_samples / fs
     return tau_samples, tau_s
 
-# ─── False Nearest Neighbors ────────────────────────────────────────────────
+# ─── False Nearest Neighbors (FIXED LOGIC) ────────────────────────────────────
 def false_nearest_neighbors(x: np.ndarray, tau: int) -> tuple[int, list[float]]:
     """
     Returns (m, fnn_fractions) where m is smallest embedding dim with FNN < FNN_THRESHOLD,
@@ -77,28 +76,37 @@ def false_nearest_neighbors(x: np.ndarray, tau: int) -> tuple[int, list[float]]:
         if len(emb) < 20:
             fnn_fractions.append(1.0)
             continue
-        # Use sklearn-style FNN via distance ratio
-        from scipy.spatial import KDTree
-        tree = KDTree(emb)
-        dists, idxs = tree.query(emb, k=2)
-        d1 = dists[:, 1]
-        # Project to m+1 and recompute
+            
         emb1 = delay_embed(x, m + 1, tau) if m + 1 <= M_MAX else None
-        if emb1 is None or len(emb1) != len(emb):
+        if emb1 is None:
             fnn_fractions.append(0.0)
             chosen_m = m
             break
-        tree1 = KDTree(emb1)
-        dists1, _ = tree1.query(emb1, k=2)
-        d2 = dists1[:, 1]
-        # FNN criterion: |d2 - d1| / d1 > threshold (R_TOL=10)
+            
+        L = min(len(emb), len(emb1))
+        emb_trunc = emb[:L]
+        emb1_trunc = emb1[:L]
+        
+        if L < 20:
+            fnn_fractions.append(1.0)
+            continue
+            
+        tree = KDTree(emb_trunc)
+        dists, idxs = tree.query(emb_trunc, k=2)
+        nn_idx = idxs[:, 1]
+        d1 = dists[:, 1]
+        
+        d2 = np.linalg.norm(emb1_trunc - emb1_trunc[nn_idx], axis=1)
+        
         with np.errstate(divide="ignore", invalid="ignore"):
             ratio = np.abs(d2 - d1) / np.where(d1 > 1e-12, d1, 1e-12)
         fnn_frac = float(np.mean(ratio > 10.0))
         fnn_fractions.append(fnn_frac)
+        
         if fnn_frac < FNN_THRESHOLD:
             chosen_m = m
             break
+            
     return chosen_m, fnn_fractions
 
 # ─── Delay embedding ────────────────────────────────────────────────────────
@@ -130,14 +138,12 @@ def sg_smooth_and_derivatives(segment: np.ndarray) -> tuple[np.ndarray, np.ndarr
     Savitzky-Golay smoothing + 1st and 2nd derivatives.
     Returns (smoothed, velocity, acceleration).
     """
-    # Ensure window length is odd and <= segment length
     w = SG_WINDOW
     if w > len(segment):
         w = len(segment) if len(segment) % 2 == 1 else len(segment) - 1
     if w < SG_POLY + 2:
         w = SG_POLY + 2 if (SG_POLY + 2) % 2 == 1 else SG_POLY + 3
     smoothed = savgol_filter(segment, w, SG_POLY, deriv=0)
-    # Derivatives: savgol with dt=1/fs
     dt = 1.0 / TARGET_FS
     velocity = savgol_filter(segment, w, SG_POLY, deriv=1, delta=dt)
     acceleration = savgol_filter(segment, w, SG_POLY, deriv=2, delta=dt)
