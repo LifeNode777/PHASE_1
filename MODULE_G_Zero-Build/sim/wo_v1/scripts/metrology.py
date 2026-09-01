@@ -7,6 +7,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.spatial import ConvexHull, KDTree
 from scipy.stats import bootstrap as scipy_bootstrap
+from scipy.signal import hilbert
 from config import (
     N_PHASE_BINS, MIN_SAMPLES_PER_BIN, MAX_HULL_POINTS,
     BOOTSTRAP_B, FD_DIRECTIONS, QHULL_FAIL_RATE_LIMIT,
@@ -26,7 +27,7 @@ def compute_phase_and_bin(
     U, S, Vt = np.linalg.svd(centered, full_matrices=False)
     pc1 = U[:, 0] * S[0]
     # Hilbert phase
-    analytic = np.fft.hilbert(pc1)
+    analytic = hilbert(pc1)
     phases = np.angle(analytic)  # (-pi, pi]
     # Bin
     bin_edges = np.linspace(-np.pi, np.pi, N_PHASE_BINS + 1)
@@ -90,10 +91,7 @@ def minkowski_gauge(hull: ConvexHull, points: np.ndarray) -> np.ndarray:
     """
     A = hull.equations[:, :-1]
     b = hull.equations[:, -1]
-    # For each point, F = max_i (A_i · w) / (-b_i) where b_i < 0
-    # Normalize so that points on hull have F ≈ 1
     Aw = points @ A.T  # (n_points, n_facets)
-    # For facets with b < 0: ratio = Aw / (-b)
     neg_b = -b
     valid = neg_b > 1e-12
     if not valid.any():
@@ -105,7 +103,6 @@ def minkowski_gauge(hull: ConvexHull, points: np.ndarray) -> np.ndarray:
 def origin_interior(hull: ConvexHull) -> bool:
     """Check if origin is inside the convex hull."""
     try:
-        # Test: all facet equations satisfied at origin → b <= 0
         return bool(np.all(hull.equations[:, -1] <= 1e-9))
     except Exception:
         return False
@@ -122,15 +119,12 @@ def theta_canon(
     n = len(velocities)
     if n == 0:
         return np.nan
-    # Per-sample: look up R(φ) from bin
     R_phi = np.array([bin_stats[b]["mean_unit_velocity"] for b in bin_indices])
     v_norms = np.linalg.norm(velocities, axis=1, keepdims=True)
     v_norms = np.where(v_norms > 1e-12, v_norms, 1.0)
     v_unit = velocities / v_norms
-    # Cosine similarity
     cos = np.sum(v_unit * R_phi, axis=1)
     cos = np.clip(cos, -1.0, 1.0)
-    # Map [-1, 1] → [0, 1]
     theta = 0.5 * (cos + 1.0)
     return float(np.mean(theta))
 
