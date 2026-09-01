@@ -20,12 +20,28 @@ def download_database(db_name: str, records: Optional[list] = None) -> Path:
     """Download PhysioNet database if not present. Returns local path."""
     data_root = ensure_data_dir()
     db_path = data_root / db_name
-    if not db_path.exists() or not any(db_path.iterdir()):
+    db_path.mkdir(parents=True, exist_ok=True)
+    
+    need_download = False
+    if records is None:
+        if not any(db_path.iterdir()):
+            need_download = True
+    else:
+        for rec in records:
+            if not (db_path / f"{rec}.hea").exists():
+                need_download = True
+                break
+                
+    if need_download:
         print(f"Downloading {db_name} ...")
-        if records is None:
-            wfdb.dl_database(db_name, str(db_path))
-        else:
-            wfdb.dl_database(db_name, str(db_path), records=records)
+        try:
+            if records is None:
+                wfdb.dl_database(db_name, str(db_path))
+            else:
+                wfdb.dl_database(db_name, str(db_path), records=records)
+        except Exception as e:
+            print(f"Download warning: {e}")
+            
     return db_path
 
 def highpass_zero_phase(x: np.ndarray, fs: float, cutoff: float = HIGHPASS_CUTOFF) -> np.ndarray:
@@ -44,17 +60,14 @@ def load_and_resample(
     resample to TARGET_FS with anti-aliasing, high-pass filter.
     Returns: signal (1-D float64), fs (TARGET_FS), meta dict.
     """
-    # Download only the requested record to keep smoke tests light
     db_path = download_database(db_name, records=[record_name])
     record_path = str(db_path / record_name)
     
-    # Read header first to know channels & fs
     record = wfdb.rdrecord(record_path)
     original_fs = float(record.fs)
     sig = record.p_signal  # (n_samples, n_channels)
     
     if channel is None:
-        # Prefer first channel that looks like ECG (heuristic: name contains 'ECG' or ML/V)
         channel = 0
         for i, name in enumerate(record.sig_name):
             n = name.upper()
@@ -65,9 +78,7 @@ def load_and_resample(
     x = sig[:, channel].astype(np.float64)
     channel_name = record.sig_name[channel]
     
-    # Resample to TARGET_FS (polyphase, anti-aliased)
     if abs(original_fs - TARGET_FS) > 1e-6:
-        # Use rational approximation for clean polyphase
         from fractions import Fraction
         frac = Fraction(TARGET_FS / original_fs).limit_denominator(1000)
         up, down = frac.numerator, frac.denominator
@@ -76,7 +87,6 @@ def load_and_resample(
     else:
         fs = original_fs
     
-    # Baseline removal
     x = highpass_zero_phase(x, fs)
     
     meta = {
@@ -107,7 +117,6 @@ def load_annotations(db_name: str, record_name: str) -> dict:
             "fs": float(ann.fs) if hasattr(ann, "fs") else None,
         }
     except Exception:
-        # ltstdb uses different extension sometimes
         try:
             ann = wfdb.rdann(record_path, "sta")
             return {
