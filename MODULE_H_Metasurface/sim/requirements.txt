@@ -1,0 +1,36 @@
+# MODULE H — sim/requirements.txt
+
+# Pinned dependencies for reproducibility across AI relays and human collaborators.
+# Ranges are upper-bounded for compatibility; freeze exact versions before
+# any L1 verdict run (pip freeze > requirements.lock).
+#
+# Install:
+#   python -m venv .venv
+#   source .venv/bin/activate          # Windows: .venv\Scripts\activate
+#   pip install -r requirements.txt
+#
+# L2/L3 (Meep, MPI, CUDA) are cluster-level and NOT listed here.
+# See README.md § Prerequisites for L2/L3 infrastructure.
+#
+# License: CC-BY-NC-SA 4.0
+
+# --- Core numerical (mandatory for L1) ---
+numpy>=1.24.0,<2.0.0
+scipy>=1.10.0,<2.0.0
+
+# --- Visualization (diagnostic loop only) ---
+matplotlib>=3.7.0,<4.0.0
+
+# --- FDTD solver (L2, L3) ---
+# Meep ≥ 1.27 required for FDTD and mp.CustomMedium Floquet modulation.
+# Install via conda:  conda install -c conda-forge pymeep
+# Or via pip if pre-built wheels exist for your platform.
+# meep>=1.27.0  # Uncomment when Meep is available in the environment
+
+# --- Optional: topological data analysis (diagnostic loop) ---
+# giotto-tda>=0.6.0  # Uncomment if persistent homology diagnostics are needed
+
+# --- Optional: Floquet quasi-energy analysis (L3) ---
+# qutip>=4.7.0  # Uncomment if Floquet analysis is needed
+
+# No ADC/DAC in the coupling loop. Ever. 👁️
