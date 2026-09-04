@@ -1,0 +1,99 @@
+# MODULE H — sim/.gitignore
+# Raw field data NEVER enters the repository.
+# Git carries code, configs, and metric summaries only.
+# Heavy fields go to Zenodo / object storage with a DOI cited in ../LOG.md.
+
+# =============================================================================
+# Raw simulation output (NEVER commit)
+# =============================================================================
+*.h5
+*.hdf5
+*.hdf
+*.nc
+*.npy
+*.npz
+*.dat
+*.mp4
+*.avi
+*.gif
+results/
+L2_fields/
+L3_fields/
+
+# =============================================================================
+# Python bytecode / packaging
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# =============================================================================
+# Virtual environments
+# =============================================================================
+.env
+.venv
+env/
+venv/
+ENV/
+
+# =============================================================================
+# Jupyter (if notebooks appear later)
+# =============================================================================
+.ipynb_checkpoints/
+
+# =============================================================================
+# Meep / FDTD / SLURM artifacts (L2/L3)
+# =============================================================================
+*.eps
+*-fields-*.h5
+*.out
+*.err
+slurm-*.out
+
+# =============================================================================
+# IDE / editor noise
+# =============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+
+# =============================================================================
+# OS noise
+# =============================================================================
+.DS_Store
+Thumbs.db
+
+# =============================================================================
+# Secrets / local overrides (must never exist, but guard anyway)
+# =============================================================================
+*.local
+config_override.py
+
+# =============================================================================
+# Never commit these — reminder:
+#   - Raw field snapshots  (.h5, .hdf5, .nc)
+#   - Simulation movies    (.mp4, .avi, .gif)
+#   - Large numpy arrays   (.npy, .npz)
+#   - Any *.dat output
+# These go to Zenodo with DOI, cited in ../LOG.md
+# =============================================================================
