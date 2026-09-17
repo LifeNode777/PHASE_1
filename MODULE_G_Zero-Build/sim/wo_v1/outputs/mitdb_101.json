@@ -43,5 +43,7 @@
   "fnn_fractions": null,
   "null_model": "c isotropic (placeholder envelope; full n=100 deferred to keep under budget)",
   "note": "single record, NOT cohort verdict. Full isotropic null envelope (n=100) not computed in this leg to stay under 2x budget; E4 uses heuristic median_log_cond > 1.0 as in reference placeholder.",
-  "lead_min_distribution": null
+  "lead_min_distribution": null,
+  "null_status": "full isotropic n=100 timed out in sandbox; E4 remains placeholder; next runner continues from branch",
+  "notebook": "outputs/mitdb_101.ipynb"
 }
