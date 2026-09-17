@@ -83,11 +83,15 @@ def run_record(
     results = []
     qhull_failures = 0
     for wi, (start, end) in enumerate(windows):
-        seg = x[start:end]
-        emb_seg = emb[start:end] if len(emb) >= end else emb[start:]
+        # Map window onto embedding coordinates (embedding is shorter by (m-1)*tau)
+        # Conservative clip as noted in METHODS_NOTES.
+        emb_start = start
+        emb_end = min(end, len(emb))
+        emb_seg = emb[emb_start:emb_end]
         if len(emb_seg) < 60:
             continue
-        smoothed, vel, acc = sg_smooth_and_derivatives(seg)
+        # §4.3: SG on the embedded trajectory (v, a shape (N', m))
+        smoothed, vel, acc = sg_smooth_and_derivatives(emb_seg)
         # Phase binning
         phases, bin_idx, bin_stats = compute_phase_and_bin(emb_seg, vel)
         if not check_window_accepted(bin_stats):
