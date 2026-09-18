@@ -18,11 +18,15 @@ from config import (
 # ─── Mutual information (histogram estimator) ───────────────────────────────
 def _histogram_mi(x: np.ndarray, y: np.ndarray, bins: int = MI_BINS) -> float:
     """Histogram-based mutual information I(x; y) in nats."""
-    cx = np.bincount(np.digitize(x, np.histogram_bin_edges(x, bins=bins)) - 1, minlength=bins).astype(float)
-    cy = np.bincount(np.digitize(y, np.histogram_bin_edges(y, bins=bins)) - 1, minlength=bins).astype(float)
+    # np.digitize returns index == bins when value lies exactly on the right edge.
+    # Clip to [0, bins-1] to avoid IndexError (Bug 1, reference implementation).
+    edges_x = np.histogram_bin_edges(x, bins=bins)
+    edges_y = np.histogram_bin_edges(y, bins=bins)
+    ix = np.clip(np.digitize(x, edges_x) - 1, 0, bins - 1)
+    iy = np.clip(np.digitize(y, edges_y) - 1, 0, bins - 1)
+    cx = np.bincount(ix, minlength=bins).astype(float)
+    cy = np.bincount(iy, minlength=bins).astype(float)
     cxy = np.zeros((bins, bins), dtype=float)
-    ix = np.digitize(x, np.histogram_bin_edges(x, bins=bins)) - 1
-    iy = np.digitize(y, np.histogram_bin_edges(y, bins=bins)) - 1
     np.add.at(cxy, (ix, iy), 1.0)
     n = cxy.sum()
     if n == 0:
@@ -133,18 +137,29 @@ def make_windows(x: np.ndarray, fs: float) -> list[tuple[int, int]]:
         start += stride
     return windows
 
-def sg_smooth_and_derivatives(segment: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def sg_smooth_and_derivatives(emb_seg: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Savitzky-Golay smoothing + 1st and 2nd derivatives.
-    Returns (smoothed, velocity, acceleration).
+    Savitzky-Golay smoothing + 1st and 2nd derivatives on the *embedded* trajectory.
+    Per WORK_ORDER_v1 §4.3: "Smooth embedded trajectory with Savitzky–Golay (window 41, poly 3);
+    velocities v and accelerations a from SG derivative coefficients".
+    emb_seg shape (N', m); returns smoothed, velocity, acceleration each of shape (N', m).
+    Edge effects of SG are accepted as-is (implementation note logged in METHODS_NOTES).
     """
+    if emb_seg.ndim == 1:
+        # legacy path (should not be used after fix); treat as m=1
+        emb_seg = emb_seg.reshape(-1, 1)
+    N, m = emb_seg.shape
     w = SG_WINDOW
-    if w > len(segment):
-        w = len(segment) if len(segment) % 2 == 1 else len(segment) - 1
+    if w > N:
+        w = N if N % 2 == 1 else N - 1
     if w < SG_POLY + 2:
         w = SG_POLY + 2 if (SG_POLY + 2) % 2 == 1 else SG_POLY + 3
-    smoothed = savgol_filter(segment, w, SG_POLY, deriv=0)
     dt = 1.0 / TARGET_FS
-    velocity = savgol_filter(segment, w, SG_POLY, deriv=1, delta=dt)
-    acceleration = savgol_filter(segment, w, SG_POLY, deriv=2, delta=dt)
+    smoothed = np.empty_like(emb_seg)
+    velocity = np.empty_like(emb_seg)
+    acceleration = np.empty_like(emb_seg)
+    for dim in range(m):
+        smoothed[:, dim] = savgol_filter(emb_seg[:, dim], w, SG_POLY, deriv=0)
+        velocity[:, dim] = savgol_filter(emb_seg[:, dim], w, SG_POLY, deriv=1, delta=dt)
+        acceleration[:, dim] = savgol_filter(emb_seg[:, dim], w, SG_POLY, deriv=2, delta=dt)
     return smoothed, velocity, acceleration

@@ -1,4 +1,3 @@
-```markdown
 # METHODS_NOTES.md — MODULE G WORK_ORDER_v1
 
 Any deviation from the pre-registered text voids the run. Record deviations here.
@@ -23,11 +22,15 @@ Any deviation from the pre-registered text voids the run. Record deviations here
 6. **Runtime**  
    Full TIER-1 (18 nsrdb + 10 mitdb) with nulls is expected to take several laptop-hours. Use `--max-windows` for development smoke tests.
 
+7. **SG edge effects (Bug 2 fix)**  
+   Savitzky–Golay (window 41, poly 3) applied independently to each coordinate of the embedded trajectory. Edge samples use the default SciPy boundary handling (no extra padding). Accepted as implementation note; no alternative (reflect/constant) was chosen silently.
+
 ## Deviations log
 
-| Date       | Executor   | Description                          | Status      |
-|------------|------------|--------------------------------------|-------------|
-| (none yet) |            |                                      |             |
+| Date       | Executor                          | Description                                                                 | Status      |
+|------------|-----------------------------------|-----------------------------------------------------------------------------|-------------|
+| 2026-09-17 | @Grok (session 2026-09-17, 7ba7cd84b6d12c5b) | Bug 1: np.digitize OOB on right edge → clip indices to [0, bins-1] in _histogram_mi | fixed       |
+| 2026-09-17 | @Grok (session 2026-09-17, 7ba7cd84b6d12c5b) | Bug 2: SG derivatives applied to 1-D raw signal instead of m-dim embedded trajectory (per §4.3 text). Fixed: SG per coordinate of emb_seg; v,a now shape (N', m) | fixed       |
 
 ## Update 2026-08-31 — numerical stability of cond(g)
 
@@ -35,58 +38,3 @@ The finite-difference Hessian of the Minkowski functional on 60 s ECG windows pr
 **Operational decision:** the primary reported `cond_g` and anisotropy index are now the condition number of the sample covariance of unit velocities.  
 Qhull hull construction and F evaluation remain active for θ_canon and for the origin-interior acceptance test.  
 This estimator change is recorded here so that any later auditor can reproduce the exact numerical path. A future WORK_ORDER_v2 may restore a regularised Finsler Hessian if desired.
-
-"""
-MODULE G — WORK_ORDER_v1 configuration
-Pre-registered constants from §§4–5. Do not change without creating WORK_ORDER_v2.
-"""
-
-SEED = 1618
-
-# Sampling
-TARGET_FS = 128.0          # Hz
-HIGHPASS_CUTOFF = 0.5      # Hz, zero-phase baseline wander removal
-
-# Takens embedding (§4.2)
-MI_BINS = 64
-MAX_LAG_S = 2.0            # search lag ≤ 2 s
-FNN_THRESHOLD = 0.10
-M_MIN, M_MAX = 3, 6
-
-# Windows (§4.3)
-WINDOW_S = 60.0            # 60 s
-STRIDE_S = 15.0            # 75% overlap
-SG_WINDOW = 41             # Savitzky–Golay
-SG_POLY = 3
-
-# Phase binning (§4.4)
-N_PHASE_BINS = 32
-MIN_SAMPLES_PER_BIN = 10
-
-# Indicatrix / F / g (§4.6)
-MAX_HULL_POINTS = 1500
-BOOTSTRAP_B = 200
-FD_DIRECTIONS = 20         # random tangent directions for finite differences
-QHULL_FAIL_RATE_LIMIT = 0.20
-
-# Null models (§4.7)
-N_NULLS = 100
-NULL_WINDOWS_PER_RECORD = 20   # runtime budget
-
-# Decision criteria (§5)
-COHORT_PASS_FRACTION = 0.80
-E4_WINDOW_FRACTION = 0.80
-E1_CI_HALFWIDTH = 0.5
-E2_SPEARMAN = 0.90
-E2_SPEARMAN_SENS = 0.85
-E3_SPEARMAN = -0.50
-
-# Data
-NSRDB_RECORDS = None       # all 18
-MITDB_RECORDS = [f"{i}" for i in range(101, 111)]  # first 10: 101–110
-LTSTDB_RECORDS = ["201", "202", "203", "204", "205"]  # TIER-2 optional
-
-# Paths (relative to sim/wo_v1/)
-DATA_DIR = "data"
-OUTPUT_DIR = "outputs"
-REFERENCE_DIR = "reference"

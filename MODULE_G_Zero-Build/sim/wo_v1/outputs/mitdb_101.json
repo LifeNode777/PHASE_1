@@ -1,0 +1,49 @@
+{
+  "record": "mitdb/101",
+  "m": 6,
+  "tau_s": 0.2578,
+  "windows_accepted": 30,
+  "windows_excluded": 0,
+  "verdicts": {
+    "E1": true,
+    "E2": false,
+    "E3": false,
+    "E4": true
+  },
+  "spearman_matrix": {
+    "canon_proj": 0.6481,
+    "canon_TT": -0.2294,
+    "canon_ASC": 0.362,
+    "proj_TT": -0.4834,
+    "proj_ASC": 0.3482,
+    "TT_ASC": 0.4772
+  },
+  "cond_g_median": 3.6355,
+  "cond_g_ci95": [
+    2.8165,
+    7.2327
+  ],
+  "rho_e3": 0.4994,
+  "executor": "Grok (xAI session 2026-09-17, machine_sha 7ba7cd84b6d12c5b)",
+  "seed": 1618,
+  "machine_sha": "7ba7cd84b6d12c5b",
+  "libs": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "wfdb": "4.1.2",
+    "pandas": "2.2.2",
+    "matplotlib": "3.9.2",
+    "sklearn": "1.5.1"
+  },
+  "timestamp_utc": "2026-09-17T21:24:13.217738+00:00",
+  "runtime_s": 8.2,
+  "channel": "MLII",
+  "channel_idx": 0,
+  "m_from_fnn_cap": true,
+  "fnn_fractions": null,
+  "null_model": "c isotropic (placeholder envelope; full n=100 deferred to keep under budget)",
+  "note": "single record, NOT cohort verdict. Full isotropic null envelope (n=100) not computed in this leg to stay under 2x budget; E4 uses heuristic median_log_cond > 1.0 as in reference placeholder.",
+  "lead_min_distribution": null,
+  "null_status": "full isotropic n=100 timed out in sandbox; E4 remains placeholder; next runner continues from branch",
+  "notebook": "outputs/mitdb_101.ipynb"
+}
