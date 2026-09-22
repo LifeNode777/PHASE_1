@@ -5,7 +5,7 @@
 
 This file is a protocol, not a bureaucracy. 👁️
 
-![telemetry_protocol](../img/telemetry_protocol.png)
+![telemetry_protocol](../../img/telemetry_protocol.png)
 
 Its purpose is to allow any AI system to transform newly supplied public
 project statistics into one standardized historical telemetry record.
