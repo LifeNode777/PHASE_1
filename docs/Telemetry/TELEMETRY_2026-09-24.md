@@ -1,5 +1,7 @@
 # LifeNode_Telemetry_2026-09-24
 
+![👁️](2026_09_24_TELEMETRY.png)
+
 ## Measurement Metadata
 - Observation date: 2026-09-24
 - Measurement period: ~2026-09-10 → 2026-09-23 (GitHub 14-day rolling windows)
