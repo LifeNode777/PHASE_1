@@ -1,0 +1,24 @@
+run_utc: 2026-09-29T20:20:24Z
+python -V: Python 3.13.5
+numpy.__version__: 2.3.5
+
+--- STDOUT BEGIN ---
+========================================================================
+MODULE H — L1 CALIBRATION CORE
+Analytic Peregrine self-overlap + phase-randomised null
+========================================================================
+Grid          : N_T = 2048, T_span = 32.0, dt = 1.562500e-02
+Random seed   : 20260904
+------------------------------------------------------------------------
+η_self        : 1.0000000000   (gate ≥ 0.98)  → PASS
+η_null        : 0.0102088868   (must stay ≪ 0.9)  → PASS
+------------------------------------------------------------------------
+OVERALL       : PASS
+========================================================================
+
+CALIBRATION PASSED.
+The measurement apparatus correctly recognises the analytic
+Peregrine and correctly rejects a pure-phase null.
+You may now proceed to the next L1 layer (SSFM generation,
+remaining kernels, noise models, α-invariance).
+--- STDOUT END ---
