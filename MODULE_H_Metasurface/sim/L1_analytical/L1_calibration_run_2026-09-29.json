@@ -1,0 +1,20 @@
+{
+  "seed": 20260904,
+  "n_t": 2048,
+  "t_span": 32.0,
+  "dt": 0.015625,
+  "eta_self": 1.0,
+  "eta_null": 0.010208886788129885,
+  "verdict_self": "PASS",
+  "verdict_null": "PASS",
+  "overall": "PASS",
+  "thresholds": {
+    "eta_self_consistency": 0.98,
+    "eta_threshold_F1": 0.9
+  },
+  "run_utc": "2026-09-29T20:20:24Z",
+  "runner": "executed in AI sandbox (ChatGPT) — AI leg as executor, human anchor: LifeNode777",
+  "python_version": "Python 3.13.5",
+  "numpy_version": "2.3.5",
+  "source": "transcribed in sandbox (no DNS, no git clone); implementation of Peregrine_metrics.py and config.py verified against GitHub main content at run time; not a byte-verified clone execution"
+}
