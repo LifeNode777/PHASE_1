@@ -1,5 +1,6 @@
-
 # LifeNode_Telemetry_2026-09-29
+
+![2026_09_29_TELEMETRY](../../img/2026_09_29_TELEMETRY..png)
 
 ## Measurement Metadata
 - Observation date: 2026-09-29 (evening snapshot, ~20:48–20:50 author local time)
