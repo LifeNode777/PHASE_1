@@ -1,5 +1,6 @@
 # Phasepunk - Decentralizing Deep Tech and Open Science through Narrative Capital and Visual Epistemology
 
+![PHASEPUNK_Research&Narrative&Impact](img/PHASEPUNK_Research&Narrative&Impact.png)
 
 **Abstract**
 
