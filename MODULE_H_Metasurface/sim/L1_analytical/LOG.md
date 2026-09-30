@@ -38,3 +38,29 @@ Reference execution artifacts
 - `L1_calibration_ENV_STDOUT_2026-09-29.txt` (verbatim environment + STDOUT)
 
 ---
+
+2026-09-30 — L1 SSFM S2 Generation & Defocusing Null Diagnostic Failure
+Runner: executed in AI sandbox — AI leg as executor, human anchor: LifeNode777
+
+Execution summary:
+- Gate 0 (η calibration via Peregrine_metrics.py): remains PASS.
+- Gate 1 (SSFM S2 self-consistency, focusing κ = -0.85): PASS. 
+  η_self = 0.9999989765 (meets η ≥ 0.98 gate). Step-size convergence, norm drift, and background stability all PASS.
+- Defocusing null (current implementation): FAILS pre-registered contract.
+
+Diagnostic / Root Cause:
+The defocusing null definition in METHODS_NOTES.md §3.1 / §3.4 and EXPECTED_RESULTS.md §3 is physically inconsistent with the overlap fidelity metric defined in §2.1.
+- Spec requires: "Exactly the same pipeline with κ = +0.85" and expects η < 0.10.
+- Physics/Math reality: The analytic Peregrine at z_start (-8.0) is 99% flat background (amplitude ~1.0). Propagating this with κ = +0.85 simply maintains the flat background (no soliton forms). Comparing this flat output to the analytic focusing Peregrine at z=0 (which also sits on a flat background of amplitude 1.0 across T_span=160) yields a high overlap (η ≈ 0.95) because the metric integrates the identical backgrounds over the entire domain. 
+- The test as written measures background similarity, not the absence of a localized soliton peak. 
+
+Decision (Human Anchor):
+Stop pipeline. Do not proceed to S1/S3-S5 or K1/K2. 
+The SSFM solver is mathematically sound for the focusing case, but the measurement apparatus cannot reject the defocusing null under its own pre-registered rules because the rules conflate background overlap with peak formation.
+No parameter adjustment, distance stretching, or threshold tuning was performed in the code to force a PASS (Rule 6: No parameter fitting to pass). Negative diagnostic recorded.
+
+Next gate / Required Action:
+The map must be updated publicly. 
+METHODS_NOTES.md §3.4 and EXPECTED_RESULTS.md §3 require a versioned amendment to redefine the defocusing null acceptance criterion. 
+Proposed fix for the docs: The null must explicitly check for the absence of a localized peak (e.g., max(|ψ|) remains near 1.0) rather than relying solely on global η dropping below 0.10 at short propagation distances.
+Once docs are amended, code will be updated to match, and Gate 1 will be re-run.
