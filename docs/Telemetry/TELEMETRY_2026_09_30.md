@@ -1,5 +1,7 @@
 # LifeNode_Telemetry_2026-09-30
 
+![2026-09-30_TELEMETRY](2026-09-30_TELEMETRY.png)
+
 ## Measurement Metadata
 - Observation date: 2026-09-29 (29 evening: XPT, META_Codex; 29/30 night: TOKIO_DRIFT_44) and 2026-09-30 (30 morning: LifeNode_2.0, 2.5_Public, PHASE_1, Quantum_Medicine)
 - Measurement period: GitHub 14-day rolling windows ≈2026-09-15/16 → 2026-09-28/29; artifact events (T1): 24.09 INDEX deployment (TOKIO); ~2026-09-29 Module H calibrated-apparatus files (PHASE_1) + profile README news (author statement)
