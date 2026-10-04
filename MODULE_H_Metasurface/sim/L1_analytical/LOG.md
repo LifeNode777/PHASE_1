@@ -146,3 +146,36 @@ the guard; re-run Gate 1 (focusing + defocusing) at the stated resolution, recor
 
 ---
 
+2026-10-04 — Peak Suppression Guard committed; contract amendment now executable
+Runner: Human Anchor LifeNode777 (GitHub web, AI sandboxes, phone); AI legs: Grok (draft structure), Qwen (final sync with config §11)
+
+Execution summary:
+- sim/L1_analytical/defocusing_guard.py committed (commit 5a13918, 115 lines).
+  It is the executable form of the amended Defocusing Null contract
+  (config.py §11, DefocusingNullContract, amendment 2026-10-04).
+- Guard logic verbatim from the frozen contract:
+  B(z) = median_τ |ψ(τ, z)|;  E(z) = max_τ |ψ(τ, z)| / B(z) − 1;
+  PASS iff max_z E(z) ≤ epsilon_guard AND max_z |B(z) − 1| ≤ epsilon_b.
+- Thresholds are read exclusively from DEFOCUSING_CONTRACT at call time;
+  the module exposes no override parameters (Rule 6 enforced by construction).
+- Result object records n_saved_z and dz_saved (slice-sampling caveat,
+  amendment 2026-10-04); the withdrawn global η < 0.10 criterion is not
+  referenced anywhere in the module — η remains diagnostic only.
+
+Decision (Human Anchor):
+- defocusing_guard.py accepted as the executable form of the amended contract.
+- MetaContract §5.7: the artifact leaves provisional status only together with
+  the Gate 1 rerun evidence (rerun pending, to be logged after this entry).
+- config.py §11 remains the single source of truth; no threshold is duplicated
+  inside the guard module.
+
+Status:
+- Gate 1 remains BLOCKED in execution: runner not yet wired; no rerun performed.
+- F5 gate remains OPEN. Noisy K1/K2 excluded from binary verdicts.
+- No parameter fitting performed; no threshold changed by commit 5a13918.
+
+Next gate:
+- Wire the Gate 1 runner: SSFM focusing (κ = −0.85) and defocusing (κ = +0.85),
+  identical pipeline, saved slices with recorded n_saved_z / Δz_saved;
+  evaluate the defocusing branch via peak_suppression_guard(); log the rerun
+  verdict with full provenance (seed, resolution, dz_saved, environment).
