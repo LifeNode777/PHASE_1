@@ -70,28 +70,31 @@ except ImportError as e:
 # ---------------------------------------------------------------------------
 # 1. Analytic Peregrine breather (exact ground truth)
 # ---------------------------------------------------------------------------
-def analytic_peregrine(tau: np.ndarray, z: float = 0.0) -> np.ndarray:
+def analytic_peregrine(tau: np.ndarray, z: float = 0.0, kappa: float = -0.85) -> np.ndarray:
     """
-    Exact Peregrine solution of the focusing NLSE
-    (standard normalisation used in the literature).
-
-        ψ_P(τ, z) = [1 − 4(1 + 2i z) / (1 + 4 τ² + 4 z²)] · exp(i z)
-
-    Parameters
-    ----------
-    tau : ndarray
-        Temporal coordinate (normalised units).
-    z : float
-        Propagation coordinate. Default 0.0 (peak location).
-
-    Returns
-    -------
-    ndarray (complex128)
-        Analytic field values on the supplied grid.
+    Exact Peregrine solution of the focusing NLSE, scaled for arbitrary kappa < 0.
+    Default kappa = -0.85 matches config.py and LifeNode Theory v4 §4.
+    
+    For kappa = -1.0, reduces to standard literature form.
+    For other kappa < 0, applies exact scaling transformation.
     """
-    denom = 1.0 + 4.0 * tau**2 + 4.0 * z**2
-    numerator = 1.0 + 2.0j * z
-    psi = (1.0 - 4.0 * numerator / denom) * np.exp(1.0j * z)
+    if kappa >= 0.0:
+        raise ValueError("analytic_peregrine requires kappa < 0 (focusing NLSE)")
+    
+    abs_k = abs(kappa)
+    
+    # Scale coordinates to standard form (kappa = -1)
+    tau_scaled = tau * np.sqrt(abs_k)
+    z_scaled = z * abs_k
+    
+    # Standard Peregrine solution on scaled coordinates
+    denom = 1.0 + 4.0 * tau_scaled**2 + 4.0 * z_scaled**2
+    numerator = 1.0 + 2.0j * z_scaled
+    psi_standard = (1.0 - 4.0 * numerator / denom) * np.exp(1.0j * z_scaled)
+    
+    # Scale amplitude
+    psi = psi_standard / np.sqrt(abs_k)
+    
     return psi.astype(np.complex128)
 
 
@@ -176,7 +179,7 @@ def run_calibration(seed: int = 20260904) -> dict:
     tau = np.linspace(-t_span / 2.0, t_span / 2.0, n_t, endpoint=False)
 
     # Analytic reference at the peak (z = 0)
-    psi_ref = analytic_peregrine(tau, z=0.0)
+    psi_ref = analytic_peregrine(tau, z=0.0, kappa=-0.85)
 
     # Test 1 — self-overlap (must be extremely close to 1)
     eta_self = overlap_fidelity(psi_ref, psi_ref, dt)
