@@ -288,7 +288,52 @@ GUARDS = NumericalGuards()
 
 
 # =============================================================================
-# 11. VERDICT ENGINE
+# 11. DEFOCUSING NULL CONTRACT (Amended 2026-10-04)
+# =============================================================================
+@dataclass
+class DefocusingNullContract:
+    """
+    Replaces the physically inconsistent global η < 0.10 requirement
+    for the defocusing null.
+
+    The global overlap metric η integrates over the full support and is
+    sensitive to the shared continuous-wave background. For κ > 0, the
+    approximately unit background is preserved during propagation, so
+    comparison against the analytic focusing reference can yield a high
+    global η despite the absence of localized Peregrine-type structure.
+
+    The defocusing branch therefore requires an explicit structural null
+    guard rather than a global-overlap rejection criterion.
+
+    Guard Logic:
+        B(z) = median_τ |ψ(τ, z)|
+        E(z) = max_τ |ψ(τ, z)| / B(z) - 1
+
+    PASS iff:
+        max_z E(z) <= epsilon_guard
+        AND
+        max_z |B(z) - 1| <= epsilon_b
+
+    The guard is evaluated on saved propagation slices only.
+    Rerun provenance MUST record n_saved_z and dz_saved.
+    """
+
+    epsilon_guard: float = 0.10
+    # ◇ 10% peak-excess ceiling relative to local background.
+    # Pre-registered a priori. The focusing Peregrine peak has
+    # E = 2.0 (|ψ|_peak = 3·B), providing a 20:1 separation
+    # from the preregistered null ceiling.
+
+    epsilon_b: float = 0.05
+    # ◇ 5% tolerance for background stability.
+    # Rejects background blow-up or damping masquerading as a clean null.
+
+
+DEFOCUSING_CONTRACT = DefocusingNullContract()
+
+
+# =============================================================================
+# 12. VERDICT ENGINE
 # =============================================================================
 VERDICT_PASS = "PASS"
 VERDICT_WARNING = "WARNING"
@@ -313,7 +358,7 @@ def compute_alpha_invariance_verdict(m_alpha: float, m_half: float) -> str:
 
 
 # =============================================================================
-# 12. IMPORT-TIME VALIDATION (fail fast, fail loud)
+# 13. IMPORT-TIME VALIDATION (fail fast, fail loud)
 # =============================================================================
 def _validate_config() -> None:
     # geometry identities
@@ -350,7 +395,8 @@ __all__ = [
     "CarrierEnvelope", "CARRIER", "TimeScaling", "TIME_SCALING",
     "K1K2Synthetic", "K1K2", "NoiseProfiles", "NOISE",
     "Thresholds", "THRESHOLDS", "FloquetParameters", "FLOQUET",
-    "NumericalGuards", "GUARDS",
+    "NumericalGuards", "GUARDS", "DefocusingNullContract",
+    "DEFOCUSING_CONTRACT",
     "VERDICT_PASS", "VERDICT_WARNING", "VERDICT_FAIL",
     "VERDICT_INVARIANT", "VERDICT_INVALID",
     "compute_verdict", "compute_alpha_invariance_verdict",
