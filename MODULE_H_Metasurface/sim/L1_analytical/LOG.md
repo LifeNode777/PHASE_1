@@ -64,3 +64,85 @@ The map must be updated publicly.
 METHODS_NOTES.md §3.4 and EXPECTED_RESULTS.md §3 require a versioned amendment to redefine the defocusing null acceptance criterion. 
 Proposed fix for the docs: The null must explicitly check for the absence of a localized peak (e.g., max(|ψ|) remains near 1.0) rather than relying solely on global η dropping below 0.10 at short propagation distances.
 Once docs are amended, code will be updated to match, and Gate 1 will be re-run.
+
+---
+
+2026-10-04 — L1 Metric Statistical Characterization (TEST-01/02) & Defocusing Null Contract Amendment
+Runner: executed in AI sandbox — AI leg as executor, human anchor: LifeNode777
+
+Execution summary:
+To resolve the Defocusing Null failure (documented 2026-09-30) without violating Rule 6 (no parameter
+fitting to pass), the overlap-fidelity metric η was characterized beyond the single preregistered
+null realization. Full records: TEST-01 / TEST-02 characterization artifacts.
+
+- TEST-01 (Phase-Randomized Null Characterization): 10,000 independent phase-randomized
+  realizations at the current configured L1 calibration resolution (N_T=2048, T_span=32).
+  - mean η_null ≈ 0.026 | median ≈ 0.025 | p95 ≈ 0.051 | p99 ≈ 0.063 | max ≈ 0.090.
+  - All realizations well below the preregistered null boundary η_null < 0.30.
+  - Resolution sweep: null overlap depends systematically on discretization (lower N_T → higher
+    null overlap); T_span sweep shows a similar, weaker dependence.
+- TEST-02 (Controlled Phase-Mismatch Calibration): ψ'(τ) = ψ(τ)·exp(i·δφ(τ)) sweep on the
+  analytical S2 reference, 500 realizations per level, same resolution.
+  - Mean η decreases monotonically: 1.000 (δ=0) → ≈0.882 (0.5) → ≈0.607 (1.0) → ≈0.326 (1.5)
+    → ≈0.135 (2.0) → ≈0.049 (2.5).
+  - Response points: η < 0.90 at δ ≈ 0.5; η < 0.70 at δ ≈ 0.9; η < 0.30 at δ ≈ 1.6.
+
+Resolution provenance note (to prevent future misreading):
+TEST-01/02 characterize η at the resolution currently frozen in config.py (N_T=2048, T_span=32.0,
+verified 2026-10-04). The 2026-09-30 Gate 1 record cites the then-configured propagation domain
+(T_span=160). These are distinct roles (metric calibration domain vs propagation domain) and
+distinct values; they are not a contradiction and must not be silently merged. The Gate 1 rerun
+must state its resolution explicitly and be interpreted at that resolution.
+
+Diagnostic / Synthesis (resolving the 2026-09-30 block):
+TEST-02 establishes η as a phase-sensitive global overlap metric: it responds monotonically to
+phase-structure mismatch. The Sept 30 defocusing branch (κ=+0.85) preserved the flat CW background
+(|ψ| ≈ 1.0) over the then-configured domain (T_span=160); compared against the analytic focusing
+reference at z=0 — which also sits on the same unit background across the full support — the global
+inner product is dominated by the identical backgrounds, yielding η ≈ 0.95. The original contract
+(METHODS_NOTES §3.4 / EXPECTED_RESULTS §3) therefore asked a global background-sensitive integral to
+certify the absence of a localized peak: a category error in the specification, not a solver defect.
+η is blind to peak absence by construction; it was never the right instrument for that question.
+
+Decision (Human Anchor):
+1. The L1 metric calibration/characterization phase is CLOSED. Within the tested calibration
+   domain, η behaves as a phase-sensitive global overlap metric with a strongly separated
+   random-phase null. This is not a claim of full validation: SSFM, noise handling, G_coh,
+   α-invariance and other supports remain unvalidated.
+2. The conceptual block from 2026-09-30 is resolved at the specification level. Gate 1 remains
+   BLOCKED in execution until the amended Defocusing Null contract is implemented and re-run.
+3. Defocusing Null contract amendment (versioned change to METHODS_NOTES.md §3.4 and
+   EXPECTED_RESULTS.md §3):
+   - Primary criterion: Peak Suppression Guard — explicit test for absence of localized structure
+     (definition below).
+   - η is retained for the defocusing branch as a reported diagnostic only; the global η < 0.10
+     acceptance criterion is withdrawn as physically inconsistent.
+4. Pre-registration rule for the guard: functional form and thresholds are frozen in config.py
+   BEFORE the Gate 1 rerun. No post-hoc adjustment (Rule 6).
+
+Peak Suppression Guard — preregistration candidate (to be frozen in config.py pre-rerun):
+- Background estimate per saved slice: B(z) = median_τ |ψ(τ, z)|  (robust: background dominates
+  the support).
+- Peak excess: E(z) = max_τ |ψ(τ, z)| / B(z) − 1, evaluated on every saved slice over
+  z ∈ [z_start, 0] (trajectory-wide, to catch transient peak formation).
+- Guard PASS iff max_z E(z) ≤ ε_guard, proposed ε_guard = 0.10.
+- Companion background check: |B(z) − 1| ≤ ε_B for all saved z, proposed ε_B = 0.05 (rejects
+  background blow-up or damping masquerading as a clean null).
+- Threshold rationale (pre-rerun, not fitted to the defocusing result): ε_guard = 0.10 is defined
+  as a 10% peak-excess ceiling relative to the local background, adopted a priori. The 2026-09-30
+  convergence, norm-drift and background-stability checks established that numerical deviations are
+  substantially smaller than this scale; their exact recorded values will be preserved with the
+  rerun provenance. The focusing Peregrine reference has peak excess 2.0 over background
+  (|ψ|_peak = 3·B), providing a large separation between the null guard and the target structure.
+  Once frozen, ε_guard must not be revised on the grounds that Gate 1 fails.
+- Slice-sampling caveat: the guard is evaluated on saved slices only; sufficiency of the saving
+  cadence is not asserted here. The rerun provenance must record n_saved_z and Δz_saved so that
+  the question "could a peak have formed between saved points?" is answerable from the record.
+
+Next gate:
+Commit the amended contract; freeze ε_guard / ε_B and the rerun resolution in config.py; implement
+the guard; re-run Gate 1 (focusing + defocusing) at the stated resolution, recording n_saved_z and
+Δz_saved in the provenance.
+
+---
+
