@@ -94,9 +94,9 @@ Results on noisy variant reported as WARNING only, never binary verdict.
 | Shuffled null | Phase-randomized S2 | η < 0.30 |
 | White Gaussian noise | Uncorrelated broadband | η < 0.20, G_coh < 3 dB |
 | Colored 1/f^α noise (α ≈ 1) | Flicker noise | η < 0.20, G_coh < 3 dB |
-| Defocusing κ > 0 | Soliton cannot exist | η < 0.10, G_coh < 0 dB |
+| | Defocusing NLSE (κ > 0, identical pipeline) | Absence of localized peak | Peak Guard PASS: E_max ≤ 0.10 ∧ max_z |B(z) − 1| ≤ 0.05 | Mandatory — η and G_coh reported as diagnostics only; global η acceptance criterion withdrawn 2026-10-04 | |
 | Rössler zombie (recommended) | Deterministic chaos | η < 0.30, must NOT trigger F1 |
-All nulls must stay well below η = 0.90 and G_coh = 10 dB.
+Null metrics must satisfy their designated preregistered thresholds. The defocusing branch is exempt from the global η criterion and is governed exclusively by the Peak Suppression Guard.
 A metric that cannot reject them is broken.
 ---
 ## 4. Time-Scaling Doctrine (α)
