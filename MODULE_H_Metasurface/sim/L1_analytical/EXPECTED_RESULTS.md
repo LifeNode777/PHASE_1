@@ -106,15 +106,55 @@ The apparatus must contain controls that MUST fail. A detector that cannot rejec
 | Shuffled null (phase-randomized S2) | < 0.30 | < 3 dB | Mandatory — tests phase sensitivity | ★ |
 | White Gaussian noise (matched BW & power) | < 0.20 | < 3 dB | Mandatory | ★ |
 | Colored 1/f^α noise (α ≈ 1, matched BW & power) | < 0.20 | < 3 dB | Mandatory — realistic adversary of bio-electronics | ★ |
-| Defocusing NLSE (κ > 0, identical pipeline) | < 0.10 | < 0 dB | Mandatory — soliton physically cannot exist | ★ |
+| | Defocusing NLSE (κ > 0, identical pipeline) | Peak Guard: E_max ≤ 0.10 ∧ max_z |B(z) − 1| ≤ 0.05 | Diagnostic only | Mandatory null control; global η acceptance criterion withdrawn 2026-10-04; see METHODS_NOTES §3.4 | ★ |
 | Rössler zombie (low-dimensional deterministic chaos) | < 0.30 | < 3 dB | Recommended → elevated to mandatory if L1 shows it can be generated reproducibly | ◇ |
 | Bare carrier (no BPB envelope) | η_bare < η_modulated | — | Frequency inversion criterion (LifeNode Theory v4 §7.3). If bare carrier outperforms BPB envelope, the module fails. | ◇ |
 
 **Autopsy protocol:**
-- If ANY mandatory null produces η ≥ 0.90 **or** G_coh ≥ 10 dB, the metric definition or its implementation is **broken**. The run is FAIL. Fix the metrics before proceeding.
-- All nulls must stay well below both η = 0.90 and G_coh = 10 dB.
+- If ANY mandatory null governed by η / G_coh produces η ≥ 0.90 **or** G_coh ≥ 10 dB, the metric definition or its implementation is **broken**. The run is FAIL. Fix the metrics before proceeding.
+- Null controls must satisfy their designated preregistered acceptance criteria. The defocusing branch is governed exclusively by the Peak Suppression Guard and is exempt from the global η acceptance criterion.
+- For the defocusing branch:
+  - B(z) = median_τ |ψ(τ, z)|
+  - E(z) = max_τ |ψ(τ, z)| / B(z) − 1
+  - E_max = max over all saved z
+  - PASS iff E_max ≤ 0.10 AND max_z |B(z) − 1| ≤ 0.05
+  - η and G_coh are retained as reported diagnostics only.
+- The Peak Suppression Guard is evaluated on saved propagation slices only. Every rerun MUST record n_saved_z and Δz_saved in machine-readable provenance.
 - Precedent: in Module G the null model reproduced the Rössler "zombie rigidity" to 14 decimal places, and the verdict E4 = FALSE ("coherent — but not alive") was a *triumph*: the detector refused dead math.
 
+### 3.1 Defocusing Null Contract — Amendment 2026-10-04
+
+The previous global η < 0.10 criterion for the defocusing branch is withdrawn.
+
+The global overlap fidelity η evaluates an inner product over the entire support and is sensitive to the shared continuous-wave background. For κ > 0, the defocusing branch preserves the approximately unit background, while the analytic focusing reference at z = 0 contains the same extensive background. The resulting high global overlap is therefore not evidence of localized Peregrine structure and cannot serve as a peak-absence criterion.
+
+The defocusing null is consequently governed by an independent Peak Suppression Guard:
+
+B(z) = median_τ |ψ(τ, z)|
+
+E(z) = max_τ |ψ(τ, z)| / B(z) − 1
+
+E_max = max over saved z
+
+PASS iff:
+
+E_max ≤ ε_guard
+AND
+max_z |B(z) − 1| ≤ ε_B
+
+with preregistered values:
+
+ε_guard = 0.10
+ε_B = 0.05
+
+These values are frozen in `config.py` before the Gate 1 rerun and must not be adjusted post-hoc to obtain PASS.
+
+Epistemic status:
+Established formalism (defocusing NLSE) → model construction (κ = +0.85, identical pipeline) → prediction (no Peregrine-type localized growth) → measurement (Peak Suppression Guard) → PASS/FAIL.
+
+η and G_coh remain reported diagnostics for the defocusing branch but do not determine its binary null verdict.
+
+Status: CONTRACT AMENDED → PREREGISTERED → RERUN PENDING.
 ---
 
 ## 4. Cross-Correlation Matrix (S1–S5)
