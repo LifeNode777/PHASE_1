@@ -1,5 +1,5 @@
-META-SYNTEZA_TELEMETRYCZNA_05_10_2026
-![META-SYNTEZA_TELEMETRYCZNA_05_10_2026](img/META-SYNTEZA_TELEMETRYCZNA_05_10_2026.png)
+TELEMETRY structural baseline
+![TELEMETRY_structural_baseline](../../TELEMETRY_structural_baseline.png)
 
 To examine the fabric of reality fragmented by a reductionist paradigm and claim that there is no global field in it is like taking a watch apart, pouring acid on it and claiming that "time does not flow out of it."
 
