@@ -162,6 +162,8 @@ Validation of the LifeNode hypothesis **without hardware**, on open datasets
 (PhysioNet, Eden Node 0): Takens embedding, topological invariants (D₂, λ₁,
 persistent homology), phase-drift detection θ(t). *TRL 3 → 4.* ← (validation pipeline published on 1 September 2026) **Start here.**
 
+- **[MODULE H — Analog Topological Filter (Metasurface)](MODULE_H_Metasurface/)** — An optional wave-domain pre-processing stage between Modules A/B (signal transduction) and C (Quantum Core). H investigates whether a programmable metasurface can correlate incoming waveforms with geometric soliton templates (S1–S5) directly in the wave domain, without ADC, DSP, or learned weights in the signal path. Its intended output is a continuous field-amplitude correlation signal for Module C, with carrier/envelope compatibility across the downstream architecture. The current validation track includes analytical modeling, RCWA/FDTD simulations, calibration, explicit expected-result criteria, and defocusing-null failure guards. H extends Module A’s ASCALON-inspired geometric filtering concept toward a time-programmable wave operator. **TRL: 2.5 → 4.**
+
 ---
 
 ## Critical Path & Dependencies
