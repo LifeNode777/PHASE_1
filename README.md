@@ -1,3 +1,8 @@
+🪓 TRAJECTORY OS FOR NEW WORLD 🛸 
+![Old_World_New_World](img/Old_World_New_World.png)
+
+---
+
 TELEMETRY structural baseline
 ![LifeNode Telemetry — Structural Baseline](docs/Telemetry/TELEMETRY_structural_baseline.png)
 
