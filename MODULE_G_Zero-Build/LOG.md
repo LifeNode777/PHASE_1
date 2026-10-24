@@ -34,3 +34,24 @@ Chronological journal. Short dated entries: decision → link. Never a storage p
 **Why now.** WORK_ORDER_v1 is frozen (§12); the reference implementation must exist before any verdict run so that auditors can re-run the pinned commit on a second machine (§9–10).
 
 **Status.** Conditional hypothesis / ACTIVE INVESTIGATION. Negative results are results.
+
+---
+
+## 2026-10-24 — Reference implementation repaired; single-record run recorded
+
+**Decision.** Merge the WORK_ORDER_v1 reference-implementation fixes and record the first documented 30-window run for `mitdb/101`, while keeping cohort-level validation open.
+
+**Changes.**
+1. **Bug 1 — histogram MI boundary:** clipped `np.digitize` indices to `[0, bins-1]` to prevent an out-of-bounds error at the rightmost bin.
+2. **Bug 2 — embedding derivatives:** applied Savitzky–Golay smoothing and derivatives coordinate-wise to the m-dimensional embedded trajectory, producing velocity and acceleration arrays in embedding space as required by WORK_ORDER_v1 §4.3.
+3. Both fixes were merged into `main` via PR #2 (merge commit `8600c3f`). See Issues #1 and #3 for the execution record and remaining deviations.
+
+**Single-record result.** `mitdb/101`, seed `1618`: 30/30 windows accepted, 0 excluded; `m=6`, `τ≈0.258 s`. Recorded verdict: E1′=True, E2′=False, E3′=False, E4′=True.
+
+**Critical qualification.** E4′ remains a placeholder-based result, not a completed null-model test. The full isotropic null model (`n=100`) exceeded the practical execution budget and was not completed in this run. The single-record verdict is not a cohort-level result and does not establish clinical validity.
+
+**Artifacts.** Per-record notebook: `sim/wo_v1/outputs/mitdb_101.ipynb`. The issue record reports an approximately 8.2 s run and preserves the execution environment identifier. See the linked issue for commit and execution provenance.
+
+**Next action.** Resume from the preserved branch and artifacts; resolve null-model runtime and implementation conformance before interpreting E4′ or launching the full TIER-1 cohort.
+
+**Status.** Reference crash fixes merged. Single-record execution documented. Full null-model validation and cohort-level conclusions remain open. Negative results are results.
