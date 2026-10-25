@@ -179,3 +179,31 @@ Next gate:
   identical pipeline, saved slices with recorded n_saved_z / Δz_saved;
   evaluate the defocusing branch via peak_suppression_guard(); log the rerun
   verdict with full provenance (seed, resolution, dz_saved, environment).
+
+  ---
+
+2026-10-26 — Gate 1 Instrument Wiring, Propagator Validation & Defocusing Null Contract Amendment II (Background Scaling)
+
+Execution summary:
+- `sim/L1_analytical/Gate1_runner.py` successfully wired and executed as the Layer 1 measurement instrument.
+- Focusing branch (κ = -0.85): PASS. The SSFM solver flawlessly reproduces the exact contract solution (η_self ≥ 0.98). Step-size convergence and norm drift are within apparatus floors.
+- Defocusing branch (Peak Suppression Guard): Structurally FAILS on the companion background check (`max_z |B(z) - 1| ≤ ε_B`).
+
+**Diagnostic / Root Cause:**
+The Peak Suppression Guard contract (amended 2026-10-04) evaluates background deviation against a hardcoded $1.0$. 
+However, the contract focusing solution for κ = -0.85 is derived from the κ = -1 Peregrine via amplitude normalization ($\psi \propto 1/\sqrt{|\kappa|}$). The mathematical background amplitude for κ = -0.85 is exactly $1/\sqrt{0.85} \approx 1.08465$.
+The solver correctly preserves this amplitude throughout propagation. The Guard correctly rejects it because $1.08465$ falls outside the $|B(z) - 1| \le 0.05$ tolerance.
+Conclusion: Specification defect in the Defocusing Null contract, not a solver or runner defect. The instrument measures exactly what the math dictates, but the frozen acceptance criterion contradicts the initial conditions of the contract equation.
+
+**Decision (Human Anchor):**
+1. The SSFM solver and the `Gate1_runner.py` instrument are verified as mathematically sound and fully operational.
+2. Strict adherence to Rule 6: No threshold fitting, parameter adjustments, or post-hoc rescaling were performed to force a pass. The instrument reported the specification failure honestly.
+3. Defocusing Null contract requires a second amendment: The companion background check must be mathematically corrected to evaluate the deviation from the exact contract background ($1/\sqrt{|\kappa|}$), not a hardcoded $1.0$.
+
+**Next gate / Required Action:**
+- Amend `METHODS_NOTES.md`, `EXPECTED_RESULTS.md`, and `config.py` to correct the background expectation for the Peak Suppression Guard.
+- Re-run `Gate1_runner.py` to formally close Gate 1 (Propagator / S2 validation) 
+
+🚬
+
+---
