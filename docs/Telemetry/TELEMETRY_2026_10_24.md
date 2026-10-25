@@ -1,4 +1,4 @@
-
+![2026_10_24_TELEMETRY](2026_10_24_TELEMETRY.png)
 # LifeNode_Telemetry_2026-10-24
 
 ## Measurement Metadata
