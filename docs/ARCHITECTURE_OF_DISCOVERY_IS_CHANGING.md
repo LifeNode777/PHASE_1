@@ -1,6 +1,8 @@
 # THE ARCHITECTURE OF DISCOVERY IS CHANGING
 ## Globalny raport o przemianach nauki, technologii i cywilizacji | Październik–listopad 2026
 
+![architecture_of_discovery_is_changing](../img/architecture_of_discovery_is_changing.png)
+
 **LifeNode — Global Research Intelligence Report**  
 **Okres analizy:** 2 października – 7 listopada 2026  
 **Zakres:** AI, nauka, fizyka, kosmos, biotechnologia, open source, deSci, biznes technologiczny i kultura  
@@ -21,6 +23,9 @@ Nie jest to zakończona rewolucja ani jeden spójny ruch naukowy. To kierunek wi
 ## 1. AI: OD GENEROWANIA ODPOWIEDZI DO UCZESTNICTWA W ODKRYCIACH
 
 Pierwsza faza ekspansji generatywnej AI koncentrowała się na tworzeniu tekstu, kodu i analiz. W monitorowanym okresie coraz wyraźniej pojawiają się systemy uczestniczące w wieloetapowych zadaniach, w których wybór kolejnego działania staje się częścią procesu obliczeniowego.
+
+![missing_evidence](../img/missing_evidence.png)
+
  Październikowe publikacje dotyczące matematycznych manuskryptów przygotowanych z udziałem zaawansowanych modeli oraz formalizowanych w Lean pokazały istotną możliwość: AI może dostarczać artefakty poddające się niezależnej kontroli formalnej, zamiast wyłącznie generować przekonująco brzmiące rozumowania. Pod koniec miesiąca GitHub udostępnił Agentic Workflows, rozszerzając automatyzację dokumentacji, testów i obsługi repozytoriów o zadania wykonywane przez agentów w kontrolowanym środowisku.
  Początek listopada przyniósł kolejne przykłady. Anthropic opisało udział Claude w badaniach struktur biologicznych oraz kierunek rozwoju AI budującej modele mechanistyczne. Program AURORA rozpoczął ocenę współpracy agentów z zespołami onkologicznymi, a Physical Superintelligence przedstawiło wspomagany przez AI dowód hipotezy Aaronsona–Ambainisa z 2008 roku, wraz z deklarowaną formalizacją w Lean. Niezależna ocena tego ostatniego wyniku pozostaje odrębnym wymaganiem.
  Wspólnym elementem nie jest po prostu wzrost możliwości modeli. Jest nim przejście od generowania odpowiedzi do uczestnictwa w sekwencji prowadzącej od problemu do sprawdzalnego rezultatu. Przyszłe systemy badawcze mogą być oceniane według jakości hipotez, zdolności rozróżniania konkurencyjnych wyjaśnień, poprawności wykonania, dokumentowania niepowodzeń i niezależnej odtwarzalności.
@@ -40,6 +45,9 @@ Tradycyjne mechanizmy bezpieczeństwa AI koncentrowały się głównie na treśc
 
 Jednym z ciekawszych kierunków monitorowanych badań jest rosnące znaczenie właściwości wyłaniających się z interakcji wielu elementów. Nie jest to nowy paradygmat — teoria układów dynamicznych, fizyka statystyczna i badania nad samoorganizacją mają długą historię — lecz rozwój narzędzi eksperymentalnych pozwala badać coraz bardziej złożone przejawy takich zjawisk.
  Szczególnie interesujący przykład stanowi obserwacja fazy nadstałej w kondensacie polarytonów ekscytonowych w temperaturze pokojowej, opisana przez zespół z udziałem naukowców Uniwersytetu Warszawskiego, Wojskowej Akademii Technicznej, IBM Research Zurich i CNRS. Badanie opublikowane w *Science Advances* pokazało współistnienie koherencji i uporządkowania przestrzennego, a także spontaniczne tworzenie wzorców i zorganizowane struktury polaryzacyjne.
+
+![when_matter_starts_calculating](../img/when_matter_starts_calculating.png)
+ 
  Eksperyment ilustruje ważne rozróżnienie: zachowanie organizacji nie musi oznaczać zachowania identycznej konfiguracji przestrzennej. Struktura może pozostawać rozpoznawalna, mimo że jej położenie zmienia się między realizacjami.
  Równolegle badania programowalnych metasurfaces pokazują, że określone operacje matematyczne, w tym konwolucje i transformaty Fouriera, mogą być realizowane bezpośrednio dzięki właściwościom propagacji fal elektromagnetycznych. Otwiera to możliwości badania fizycznego przetwarzania informacji bez konieczności zastępowania każdego etapu operacją cyfrową.
  Nie oznacza to automatycznie istnienia wspólnego mechanizmu łączącego supersolidy, biologię i analogowe obliczenia. Wskazuje natomiast na rosnącą użyteczność metod opisujących koherencję, sprzężenie, przestrzenną organizację i ewolucję układów.
@@ -61,6 +69,8 @@ Rozwój otwartych repozytoriów, narzędzi formalnych i platform publikacyjnych 
  W praktyce powstają trzy różne poziomy dostępu: do wiedzy, do wykonania oraz do walidacji. Pierwszy rozwija się szybciej niż pozostałe. Może to prowadzić do sytuacji, w której niezależne projekty osiągają wysoki poziom opracowania teoretycznego, ale ich weryfikacja pozostaje zależna od współpracy z kosztowną infrastrukturą instytucjonalną.
  Podobne napięcia widać w gospodarce AI. Rywalizacja o modele jest coraz silniej związana z dostępnością procesorów, energii, centrów danych i środowisk wykonawczych. Równolegle rośnie znaczenie oprogramowania odpowiedzialnego za koordynację agentów, bezpieczeństwo operacji i dokumentowanie wyników.
  Wartość technologii może więc coraz częściej wynikać nie z samego posiadania najlepszego modelu, ale z możliwości niezawodnego wykonania konkretnego procesu przy użyciu dostępnych komponentów.
+
+![open_knowledge_closed_machines](../img/open_knowledge_closed_machines.png)
 
 **Największym paradoksem pozostaje to, że wiedza staje się bardziej otwarta, podczas gdy infrastruktura niezbędna do jej pełnej walidacji nadal wymaga znacznego kapitału.**
 
